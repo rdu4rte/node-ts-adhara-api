@@ -189,4 +189,27 @@ describe('Register Controller', () => {
     expect(res.statusCode).toBe(500)
     expect(res.body).toEqual(new InternalServerError())
   })
+
+  test('should call AddUser with correct values', async () => {
+    const { sut, addUserStub } = makeSut()
+    const addSpy = jest.spyOn(addUserStub, 'add')
+    const req: HttpRequest = {
+      body: {
+        username: 'any_username',
+        email: 'any_email@mail.com',
+        password1: 'any_password',
+        password2: 'any_password'
+      }
+    }
+    await sut.handle(req)
+    expect(addSpy).toHaveBeenLastCalledWith({
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password1
+    })
+  })
+
+  // test('should return 200 if valid data is provided', async () => {
+
+  // })
 })
