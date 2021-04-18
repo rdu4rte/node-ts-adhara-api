@@ -1,0 +1,24 @@
+{
+  "presentation-layer": {
+    "controllers": {
+      "description": "métodos que realizam uma única função",
+      "example": "register-user.controller.ts",
+      "covers": "lógica de um método"
+    },
+    "errors": {
+      "description": "lidar com erros específicos implementando um \"new Error()\"",
+      "example": "invalid-param.error.ts",
+      "covers": "-"
+    },
+    "helpers": {
+      "description": "facilita a forma que um dado ou método irá interagir com outros métodos",
+      "example": "http.helper.ts",
+      "covers": "-"
+    },
+    "protocols": {
+      "description": "interfaces e modelos/entidades",
+      "example": "http.protocol.ts",
+      "covers": "descreve e define a forma de um determinado dado ou conjunto de dados"
+    }
+  }
+}
