@@ -126,7 +126,7 @@ describe('Register Controller', () => {
 
     const req: HttpRequest = {
       body: {
-        username: 'any_name',
+        username: 'any_username',
         email: 'invalid_email',
         password1: 'any_password',
         password2: 'any_password'
@@ -136,5 +136,20 @@ describe('Register Controller', () => {
     const res: HttpResponse = await sut.handle(req)
     expect(res.statusCode).toBe(400)
     expect(res.body).toEqual(new InvalidParamError('email'))
+  })
+
+  test('should call EmailValidator with correct email', async () => {
+    const { sut, emailValidatorStub } = makeSut()
+    const validSpy = jest.spyOn(emailValidatorStub, 'isValid')
+    const req: HttpRequest = {
+      body: {
+        username: 'any_username',
+        email: 'any_email@mail.com',
+        password1: 'any_password',
+        password2: 'any_password'
+      }
+    }
+    await sut.handle(req)
+    expect(validSpy).toHaveBeenCalledWith(req.body.email)
   })
 })
