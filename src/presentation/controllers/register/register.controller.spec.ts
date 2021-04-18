@@ -1,6 +1,6 @@
 import { AddUser, EmailValidator, UserModel, HttpRequest } from './register.protocol'
 import { RegisterController } from './register.controller'
-import { MissingParamError } from '../../errors'
+import { MissingParamError, MatchParamError } from '../../errors'
 
 const makeEmailValitor = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -102,5 +102,21 @@ describe('Register Controller', () => {
     const res = await sut.handle(req)
     expect(res.statusCode).toBe(400)
     expect(res.body).toEqual(new MissingParamError('password2'))
+  })
+
+  test('should return 400 if password confirmation fails', async () => {
+    const { sut } = makeSut()
+    const req: HttpRequest = {
+      body: {
+        username: 'any_username',
+        email: 'any_email@mail.com',
+        password1: 'any_password',
+        password2: 'invalid_password'
+      }
+    }
+
+    const res = await sut.handle(req)
+    expect(res.statusCode).toBe(400)
+    expect(res.body).toEqual(new MatchParamError('password1', 'password2'))
   })
 })
