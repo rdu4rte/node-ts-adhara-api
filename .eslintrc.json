@@ -1,0 +1,26 @@
+{
+  "extends": [
+    "standard-with-typescript",
+    "plugin:json/recommended"
+  ],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "@typescript-eslint/consistent-type-definitions": "off",
+    "@typescript-eslint/comma-spacing": "off",
+    "@typescript-eslint/return-await": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/no-namespace": "off",
+    "@typescript-eslint/space-before-function-paren": "off",
+    "@typescript-eslint/method-signature-style": "off",
+    "import/export": "off",
+    "eol-last": "off",
+    "semi": [
+      2,
+      "never"
+    ]
+  }
+}
