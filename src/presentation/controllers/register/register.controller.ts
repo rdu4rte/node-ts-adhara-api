@@ -1,6 +1,6 @@
 import { AddUser, Controller, EmailValidator, HttpRequest, HttpResponse } from './register.protocol'
 import { MissingParamError, MatchParamError, InvalidParamError } from '../../errors'
-import { badRequest, ok, internalServerError } from '../../helpers/http.helper'
+import { badRequest, internalServerError, ok } from '../../helpers/http.helper'
 
 export class RegisterController implements Controller {
   private readonly _emailValidator: EmailValidator
@@ -11,7 +11,7 @@ export class RegisterController implements Controller {
     this._addUser = addUser
   }
 
-  async handle(req: HttpRequest): Promise<HttpResponse> {
+  async handle(req: HttpRequest): Promise<HttpResponse | any> {
     try {
       const requiredFields = ['username', 'email', 'password1', 'password2']
       for (const field of requiredFields) {
