@@ -1,6 +1,6 @@
 import { AddUser, Controller, EmailValidator, HttpRequest, HttpResponse } from './register.protocol'
 import { MissingParamError, MatchParamError, InvalidParamError } from '../../errors'
-import { badRequest, internalServerError, ok } from '../../helpers/http.helper'
+import { badRequest, internalServerError, ok } from '../../helpers'
 
 export class RegisterController implements Controller {
   private readonly _emailValidator: EmailValidator
