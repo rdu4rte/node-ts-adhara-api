@@ -6,3 +6,6 @@ dist
 
 # extensions
 .husky
+
+# jest
+coverage
