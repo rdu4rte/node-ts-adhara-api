@@ -1,8 +1,8 @@
-import { AddUser, EmailValidator, UserModel, HttpRequest } from './register.protocol'
+import { AddUser, EmailValidator, UserModel, HttpRequest, HttpResponse } from './register.protocol'
 import { RegisterController } from './register.controller'
-import { MissingParamError, MatchParamError } from '../../errors'
+import { MissingParamError, MatchParamError, InvalidParamError } from '../../errors'
 
-const makeEmailValitor = (): EmailValidator => {
+const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
     isValid(email: string): boolean {
       return true
@@ -33,7 +33,7 @@ interface SutTypes {
 }
 
 const makeSut = (): SutTypes => {
-  const emailValidatorStub = makeEmailValitor()
+  const emailValidatorStub = makeEmailValidator()
   const addUserStub = makeAddUser()
   const sut = new RegisterController(emailValidatorStub, addUserStub)
   return {
@@ -54,7 +54,7 @@ describe('Register Controller', () => {
       }
     }
 
-    const res = await sut.handle(req)
+    const res: HttpResponse = await sut.handle(req)
     expect(res.statusCode).toBe(400)
     expect(res.body).toEqual(new MissingParamError('username'))
   })
@@ -69,7 +69,7 @@ describe('Register Controller', () => {
       }
     }
 
-    const res = await sut.handle(req)
+    const res: HttpResponse = await sut.handle(req)
     expect(res.statusCode).toBe(400)
     expect(res.body).toEqual(new MissingParamError('email'))
   })
@@ -84,7 +84,7 @@ describe('Register Controller', () => {
       }
     }
 
-    const res = await sut.handle(req)
+    const res: HttpResponse = await sut.handle(req)
     expect(res.statusCode).toBe(400)
     expect(res.body).toEqual(new MissingParamError('password1'))
   })
@@ -99,7 +99,7 @@ describe('Register Controller', () => {
       }
     }
 
-    const res = await sut.handle(req)
+    const res: HttpResponse = await sut.handle(req)
     expect(res.statusCode).toBe(400)
     expect(res.body).toEqual(new MissingParamError('password2'))
   })
@@ -115,8 +115,26 @@ describe('Register Controller', () => {
       }
     }
 
-    const res = await sut.handle(req)
+    const res: HttpResponse = await sut.handle(req)
     expect(res.statusCode).toBe(400)
     expect(res.body).toEqual(new MatchParamError('password1', 'password2'))
+  })
+
+  test('should return 400 if an invalid email is provided', async () => {
+    const { sut, emailValidatorStub } = makeSut()
+    jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
+
+    const req: HttpRequest = {
+      body: {
+        username: 'any_name',
+        email: 'invalid_email',
+        password1: 'any_password',
+        password2: 'any_password'
+      }
+    }
+
+    const res: HttpResponse = await sut.handle(req)
+    expect(res.statusCode).toBe(400)
+    expect(res.body).toEqual(new InvalidParamError('email'))
   })
 })
