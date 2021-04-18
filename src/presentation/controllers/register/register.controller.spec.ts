@@ -16,7 +16,7 @@ const makeAddUser = (): AddUser => {
     async add(user: UserModel): Promise<UserModel> {
       const fakeAccount = {
         id: 'valid_id',
-        username: 'valid_name',
+        username: 'valid_username',
         email: 'valid_email@mail.com',
         password: 'valid_password'
       }
@@ -209,7 +209,23 @@ describe('Register Controller', () => {
     })
   })
 
-  // test('should return 200 if valid data is provided', async () => {
-
-  // })
+  test('should return 200 if valid data is provided', async () => {
+    const { sut } = makeSut()
+    const req: HttpRequest = {
+      body: {
+        username: 'valid_username',
+        email: 'valid_email@mail.com',
+        password1: 'valid_password',
+        password2: 'valid_password'
+      }
+    }
+    const res: HttpResponse = await sut.handle(req)
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toEqual({
+      id: 'valid_id',
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password1
+    })
+  })
 })
