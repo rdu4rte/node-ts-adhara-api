@@ -20,7 +20,7 @@ export class RegisterController implements Controller {
         }
       }
 
-      const { email, password1, password2 } = req.body
+      const { username, email, password1, password2 } = req.body
       if (password1 !== password2) {
         return badRequest(new MatchParamError('password1', 'password2'))
       }
@@ -29,7 +29,13 @@ export class RegisterController implements Controller {
         return badRequest(new InvalidParamError('email'))
       }
 
-      return ok(req.body)
+      const user = await this._addUser.add({
+        username: username,
+        email: email,
+        password: password1
+      })
+
+      return ok(user)
     } catch (err) {
       return internalServerError()
     }
