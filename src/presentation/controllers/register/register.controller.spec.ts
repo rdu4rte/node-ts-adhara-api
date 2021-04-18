@@ -171,4 +171,22 @@ describe('Register Controller', () => {
     expect(res.statusCode).toBe(500)
     expect(res.body).toEqual(new InternalServerError())
   })
+
+  test('should return 500 if AddUser throws', async () => {
+    const { sut, addUserStub } = makeSut()
+    jest.spyOn(addUserStub, 'add').mockImplementationOnce(async () => {
+      return new Promise((resolve, reject) => reject(new InternalServerError()))
+    })
+    const req: HttpRequest = {
+      body: {
+        username: 'any_username',
+        email: 'any_email@mail.com',
+        password1: 'any_password',
+        password2: 'any_password'
+      }
+    }
+    const res: HttpResponse = await sut.handle(req)
+    expect(res.statusCode).toBe(500)
+    expect(res.body).toEqual(new InternalServerError())
+  })
 })
