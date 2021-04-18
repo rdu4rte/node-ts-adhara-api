@@ -1,5 +1,5 @@
 import { AddUser, Controller, EmailValidator, HttpRequest, HttpResponse } from './register.protocol'
-import { MissingParamError } from '../../errors'
+import { MissingParamError, MatchParamError } from '../../errors'
 import { badRequest, ok, internalServerError } from '../../helpers/http.helper'
 
 export class RegisterController implements Controller {
@@ -18,6 +18,11 @@ export class RegisterController implements Controller {
         if (!req.body[field]) {
           return badRequest(new MissingParamError(field))
         }
+      }
+
+      const { password1, password2 } = req.body
+      if (password1 !== password2) {
+        return badRequest(new MatchParamError('password1', 'password2'))
       }
 
       return ok(req.body)
