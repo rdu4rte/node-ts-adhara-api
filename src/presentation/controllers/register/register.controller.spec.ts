@@ -1,6 +1,6 @@
 import { AddUser, EmailValidator, UserModel, HttpRequest, HttpResponse } from './register.protocol'
 import { RegisterController } from './register.controller'
-import { MissingParamError, MatchParamError, InvalidParamError } from '../../errors'
+import { MissingParamError, MatchParamError, InvalidParamError, InternalServerError } from '../../errors'
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -151,5 +151,24 @@ describe('Register Controller', () => {
     }
     await sut.handle(req)
     expect(validSpy).toHaveBeenCalledWith(req.body.email)
+  })
+
+  test('should return 500 if EmailValidator throws', async () => {
+    const { sut, emailValidatorStub } = makeSut()
+    jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
+      throw new InternalServerError()
+    })
+
+    const req: HttpRequest = {
+      body: {
+        username: 'any_username',
+        email: 'any_email@mail.com',
+        password1: 'any_password',
+        password2: 'any_password'
+      }
+    }
+    const res: HttpResponse = await sut.handle(req)
+    expect(res.statusCode).toBe(500)
+    expect(res.body).toEqual(new InternalServerError())
   })
 })
