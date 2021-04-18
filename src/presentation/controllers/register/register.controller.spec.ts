@@ -58,4 +58,19 @@ describe('Register Controller', () => {
     expect(res.statusCode).toBe(400)
     expect(res.body).toEqual(new MissingParamError('username'))
   })
+
+  test('should return 400 if no email is provided', async () => {
+    const { sut } = makeSut()
+    const req: HttpRequest = {
+      body: {
+        username: 'any_username',
+        password1: 'any_password',
+        password2: 'any_password'
+      }
+    }
+
+    const res = await sut.handle(req)
+    expect(res.statusCode).toBe(400)
+    expect(res.body).toEqual(new MissingParamError('email'))
+  })
 })
