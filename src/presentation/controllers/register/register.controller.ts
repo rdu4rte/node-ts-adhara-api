@@ -11,7 +11,7 @@ export class RegisterController implements Controller {
     this._addUser = addUser
   }
 
-  async handle(req: HttpRequest): Promise<HttpResponse | any> {
+  async handle(req: HttpRequest): Promise<HttpResponse> {
     try {
       const requiredFields = ['username', 'email', 'password1', 'password2']
       for (const field of requiredFields) {
